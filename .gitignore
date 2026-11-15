@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+.venv/
+venv/
+ENV/
+
+# Node
+node_modules/
+dist/
+.env.local
+
+# Supabase and system
+.DS_Store
+Thumbs.db

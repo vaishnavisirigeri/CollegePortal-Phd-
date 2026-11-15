@@ -189,25 +189,51 @@ def extract_text_pdf(page):
 
 
 # ============================================================================ scans
+_EASYOCR_READER = None
+
+def get_easyocr_reader():
+    global _EASYOCR_READER
+    if _EASYOCR_READER is None:
+        try:
+            import easyocr
+            _EASYOCR_READER = easyocr.Reader(['en'], gpu=False)
+        except Exception:
+            _EASYOCR_READER = False
+    return _EASYOCR_READER
+
+
 def ocr_cell(gray, box, cfg=TESS_CFG, pad=20):
     x0, y0, x1, y1 = [int(round(v)) for v in box]
     crop = gray[max(y0, 0):y1, max(x0, 0):x1]
     if crop.size == 0:
         return "", 0.0
     crop = cv2.copyMakeBorder(crop, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=255)
-    d = pytesseract.image_to_data(Image.fromarray(crop), lang="eng", config=cfg,
-                                  output_type=pytesseract.Output.DICT)
-    lines, confs = {}, []
-    for i, w in enumerate(d["text"]):
-        if not w.strip():
-            continue
-        c = float(d["conf"][i])
-        if c >= 0:
-            confs.append(c)
-        key = (d["block_num"][i], d["par_num"][i], d["line_num"][i])
-        lines.setdefault(key, []).append(w)
-    text = "\n".join(" ".join(ws) for _, ws in sorted(lines.items()))
-    return clean_text(text), (sum(confs) / len(confs) if confs else 0.0)
+
+    try:
+        d = pytesseract.image_to_data(Image.fromarray(crop), lang="eng", config=cfg,
+                                      output_type=pytesseract.Output.DICT)
+        lines, confs = {}, []
+        for i, w in enumerate(d["text"]):
+            if not w.strip():
+                continue
+            c = float(d["conf"][i])
+            if c >= 0:
+                confs.append(c)
+            key = (d["block_num"][i], d["par_num"][i], d["line_num"][i])
+            lines.setdefault(key, []).append(w)
+        text = "\n".join(" ".join(ws) for _, ws in sorted(lines.items()))
+        return clean_text(text), (sum(confs) / len(confs) if confs else 0.0)
+    except Exception:
+        reader = get_easyocr_reader()
+        if reader:
+            try:
+                res = reader.readtext(crop)
+                texts = [r[1] for r in res if r[1].strip()]
+                confs = [r[2] * 100 for r in res if r[2] is not None]
+                return clean_text(" ".join(texts)), (sum(confs) / len(confs) if confs else 90.0)
+            except Exception:
+                return "", 0.0
+        return "", 0.0
 
 
 def extract_scan(page):
@@ -529,6 +555,34 @@ def colab_main():
     out = run(pdfs, xlsx)
     if out:
         files.download(out)
+
+
+def process_uploaded_pdf(file_path):
+    """Process a single uploaded PDF and return structured dict."""
+    rec = judge(extract_pdf(file_path))
+    fields = rec.get("fields", {})
+    confs = [c for c in rec.get("conf", {}).values() if c is not None]
+    avg_conf = (sum(confs) / len(confs)) if confs else 100.0
+
+    return {
+        "source_file": rec.get("Source file", os.path.basename(file_path)),
+        "letter_no": rec.get("Letter No", ""),
+        "letter_date": rec.get("Letter Date", ""),
+        "candidate_name": fields.get("name", ""),
+        "usn": fields.get("usn", ""),
+        "category": fields.get("category", ""),
+        "faculty": fields.get("faculty", ""),
+        "research_center": fields.get("centre", ""),
+        "specialization": fields.get("spec", ""),
+        "topic": fields.get("topic", ""),
+        "supervisor": fields.get("supervisor", ""),
+        "cosupervisor": fields.get("cosupervisor", ""),
+        "ocr_confidence": round(avg_conf, 1),
+        "ocr_status": rec.get("Status", "OK"),
+        "notes": rec.get("Notes", ""),
+        "fields": fields,
+        "mode": rec.get("mode", "text")
+    }
 
 
 if IN_COLAB:

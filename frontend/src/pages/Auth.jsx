@@ -28,7 +28,7 @@ function Auth({ role, onLoginSuccess, onBack }) {
       // Get the logged-in user's profile
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("username, role")
+        .select("id, username, full_name, role, department_id, supervisor_id, usn")
         .eq("id", data.user.id)
         .single();
 

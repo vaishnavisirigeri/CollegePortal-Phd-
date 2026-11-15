@@ -6,8 +6,9 @@ import Auth from "./pages/Auth";
 import StudentOptions from "./pages/StudentOptions";
 import StudentDashboard from "./pages/StudentDashboard";
 
-import AdminOptions from "./pages/AdminOptions";
-import AdminDashboard from "./pages/AdminDashboard";
+import SupervisorDashboard from "./pages/SupervisorDashboard";
+import HodDashboard from "./pages/HodDashboard";
+import PrincipalDashboard from "./pages/PrincipalDashboard";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -20,23 +21,32 @@ function App() {
     setCurrentPage("auth");
   };
 
+  // Logout handler
+  const handleLogout = () => {
+    setUserProfile(null);
+    setCurrentRole("");
+    setCurrentPage("home");
+  };
+
   // After successful authentication
   const handleLoginSuccess = (profile) => {
     setUserProfile(profile);
 
-    if (profile.role === "student") {
+    const r = (profile.role || "").toLowerCase();
+    if (r === "student") {
       setCurrentPage("student-options");
-    } else if (
-      profile.role === "hod" ||
-      profile.role === "principal"
-    ) {
-      setCurrentPage("admin-options");
-    } else if (profile.role === "supervisor") {
+    } else if (r === "supervisor") {
       setCurrentPage("supervisor");
+    } else if (r === "hod") {
+      setCurrentPage("hod");
+    } else if (r === "principal") {
+      setCurrentPage("principal");
+    } else {
+      setCurrentPage("home");
     }
   };
 
-  // Authentication page
+  // 1. Authentication page
   if (currentPage === "auth") {
     return (
       <Auth
@@ -47,83 +57,84 @@ function App() {
     );
   }
 
-  // Student options
+  // 2. Student Options
   if (currentPage === "student-options") {
     return (
       <StudentOptions
         onUpload={() => setCurrentPage("student")}
         onChooseCourse={() => setCurrentPage("choose-course")}
-        onBack={() => setCurrentPage("home")}
+        onBack={handleLogout}
       />
     );
   }
 
-  // Student PDF upload
+  // 3. Student Dashboard (Upload + Live Jnana Shodha Tracker)
   if (currentPage === "student") {
     return (
       <StudentDashboard
+        userProfile={userProfile}
         onBack={() => setCurrentPage("student-options")}
+        onLogout={handleLogout}
       />
     );
   }
 
-  // Choose course
+  // 4. Choose Course Placeholder
   if (currentPage === "choose-course") {
     return (
-      <div>
-        <h2>Choose Course</h2>
-        <p>We'll build this page next!</p>
-        <button onClick={() => setCurrentPage("student-options")}>
-          Back
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <h2>🎓 Research Coursework & Programme Selection</h2>
+        <p>This module is scheduled for the next phase of the Jnana Shodha implementation.</p>
+        <button
+          style={{ padding: "0.6rem 1.2rem", cursor: "pointer", marginTop: "1rem" }}
+          onClick={() => setCurrentPage("student-options")}
+        >
+          ← Back to Student Options
         </button>
       </div>
     );
   }
 
-  // HOD and Principal options
-  if (currentPage === "admin-options") {
-    return (
-      <AdminOptions
-        role={currentRole}
-        onView={() => setCurrentPage("admin-dashboard")}
-        onDownload={() => {
-          window.location.href = "/download";
-        }}
-        onBack={() => setCurrentPage("home")}
-      />
-    );
-  }
-
-  // Excel dashboard
-  if (currentPage === "admin-dashboard") {
-    return (
-      <AdminDashboard
-        role={currentRole}
-        onBack={() => setCurrentPage("admin-options")}
-      />
-    );
-  }
-
-  // Supervisor placeholder
+  // 5. Supervisor Dashboard
   if (currentPage === "supervisor") {
     return (
-      <div>
-        <h2>Supervisor Login Successful</h2>
-        <p>Supervisor dashboard will be developed later.</p>
-        <button onClick={() => setCurrentPage("home")}>
-          Back to Home
-        </button>
-      </div>
+      <SupervisorDashboard
+        userProfile={userProfile}
+        onBack={() => setCurrentPage("home")}
+        onLogout={handleLogout}
+      />
     );
   }
 
-  // Landing page
+  // 6. HOD Dashboard
+  if (currentPage === "hod") {
+    return (
+      <HodDashboard
+        userProfile={userProfile}
+        onBack={() => setCurrentPage("home")}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // 7. Principal Dashboard
+  if (currentPage === "principal") {
+    return (
+      <PrincipalDashboard
+        userProfile={userProfile}
+        onBack={() => setCurrentPage("home")}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // Default: Landing page
   return (
     <Login
       onStudentLogin={() => openAuth("student")}
+      onSupervisorLogin={() => openAuth("supervisor")}
       onHodLogin={() => openAuth("hod")}
       onPrincipalLogin={() => openAuth("principal")}
-      onSupervisorLogin={() => openAuth("supervisor")}
     />
   );
 }
