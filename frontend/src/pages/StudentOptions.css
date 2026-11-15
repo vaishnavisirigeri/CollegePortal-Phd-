@@ -1,0 +1,104 @@
+.student-options-page {
+  min-height: 100vh;
+  background: #eeeae5;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+}
+
+.student-options-header {
+  background: #666;
+  color: white;
+  text-align: center;
+  padding: 25px;
+}
+
+.student-options-header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.student-options-header p {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.student-options-title {
+  background: #444;
+  padding: 12px;
+  text-align: center;
+}
+
+.student-options-title h2 {
+  color: #ffb000;
+  margin: 0;
+}
+
+.student-options-content {
+  width: 90%;
+  max-width: 1000px;
+  margin: 45px auto;
+  text-align: center;
+}
+
+.student-options-content > h2 {
+  color: #347fba;
+}
+
+.student-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 35px;
+  margin-top: 40px;
+}
+
+.student-option-card {
+  background: white;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 35px 20px;
+}
+
+.student-option-icon {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
+
+.student-option-card h3 {
+  color: #347fba;
+}
+
+.student-option-card p {
+  min-height: 40px;
+  line-height: 1.5;
+}
+
+.student-option-card button {
+  background: #347fba;
+  color: white;
+  border: none;
+  padding: 14px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.student-option-card button:hover {
+  background: #286a9d;
+}
+
+.options-back-button {
+  margin-top: 35px;
+  padding: 10px 20px;
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .student-options-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,6 @@
 import "./Login.css";
 import collegeLogo from "../assets/college-logo.png";
-function Login() {
+function Login({ onStudentLogin, onHodLogin, onPrincipalLogin })  {
   return (
     <div className="portal-page">
 
@@ -44,9 +44,9 @@ function Login() {
                 👤
               </div>
 
-              <button>
-                STUDENT LOGIN
-              </button>
+             <button onClick={onStudentLogin}>
+  STUDENT LOGIN
+</button>
 
             </div>
 
@@ -63,7 +63,18 @@ function Login() {
               </button>
 
             </div>
+{/* HOD */}
+<div className="role-card">
 
+  <div className="role-icon">
+    👤
+  </div>
+
+  <button onClick={onHodLogin}>
+    HOD LOGIN
+  </button>
+
+</div>
 
             {/* Principal */}
             <div className="role-card">
@@ -72,7 +83,7 @@ function Login() {
                 👤
               </div>
 
-              <button>
+              <button onClick={onPrincipalLogin}>
                 PRINCIPAL / HEAD LOGIN
               </button>
 

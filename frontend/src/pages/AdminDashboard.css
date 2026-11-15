@@ -1,0 +1,98 @@
+.admin-dashboard {
+  min-height: 100vh;
+  background: #eeeae5;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+}
+
+.admin-dashboard-header {
+  background: #666;
+  color: white;
+  text-align: center;
+  padding: 25px;
+}
+
+.admin-dashboard-header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.admin-dashboard-header p {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.admin-dashboard-title {
+  background: #444;
+  padding: 12px;
+  text-align: center;
+}
+
+.admin-dashboard-title h2 {
+  color: #ffb000;
+  margin: 0;
+}
+
+.records-content {
+  width: 95%;
+  margin: 35px auto;
+}
+
+.records-content h2 {
+  color: #347fba;
+}
+
+.records-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border: 1px solid #bbb;
+  margin-top: 20px;
+}
+
+.records-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.records-table-container th {
+  background: #347fba;
+  color: white;
+  padding: 13px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+.records-table-container td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.records-table-container tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+.records-error {
+  color: red;
+}
+
+.records-back-button {
+  margin-top: 25px;
+  padding: 10px 20px;
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #555;
+  color: white;
+  margin-top: 30px;
+}

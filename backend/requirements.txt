@@ -1,0 +1,7 @@
+Flask
+PyMuPDF
+pytesseract
+opencv-python-headless
+numpy
+openpyxl
+Pillow
